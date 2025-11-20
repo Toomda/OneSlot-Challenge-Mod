@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "toomda.oneslot.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "PlayerInventoryMixin",
+    "ScreenHandlerMixin",
+    "ServerPlayNetworkHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "client": [
+    "HandledScreenMixin"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "oneslot",
+	"version": "${version}",
+	"name": "One Slot",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/oneslot/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"toomda.oneslot.OneSlot"
+		],
+		"fabric-datagen": [
+			"toomda.oneslot.OneSlotDataGenerator"
+		]
+	},
+	"mixins": [
+		"oneslot.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.17.3",
+		"minecraft": "~1.21.7",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
