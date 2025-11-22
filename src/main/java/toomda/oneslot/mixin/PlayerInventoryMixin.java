@@ -12,15 +12,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerInventory.class)
 public abstract class PlayerInventoryMixin {
 
-    private static final int ONE_ALLOWED_HOTBAR_INDEX = 4;
-
     @Shadow
     private int selectedSlot;
 
     @Inject(method = "setSelectedSlot", at = @At("HEAD"), cancellable = true)
     private void oneSlot$lockSelectedSlot(int slot, CallbackInfo ci) {
-        // Ignoriere alles und setze immer auf 4
-        this.selectedSlot = ONE_ALLOWED_HOTBAR_INDEX;
+        this.selectedSlot = 4;
         ci.cancel();
     }
 
@@ -36,7 +33,7 @@ public abstract class PlayerInventoryMixin {
         }
 
         PlayerInventory inv = (PlayerInventory) (Object) this;
-        int targetIndex = ONE_ALLOWED_HOTBAR_INDEX;
+        int targetIndex = 4;
 
         ItemStack existing = inv.getStack(targetIndex);
         int maxCount = Math.min(stack.getMaxCount(), inv.getMaxCount(stack));
@@ -66,6 +63,6 @@ public abstract class PlayerInventoryMixin {
         }
 
         cir.setReturnValue(moved);
-        cir.cancel(); // Vanilla-Logik nicht mehr ausführen
+        cir.cancel();
     }
 }

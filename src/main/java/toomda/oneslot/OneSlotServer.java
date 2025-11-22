@@ -9,8 +9,6 @@ import net.minecraft.util.collection.DefaultedList;
 
 public final class OneSlotServer {
 
-    private static final int ONE_ALLOWED_MAIN_SLOT = 4; // mittlerer Hotbar-Slot
-
     private OneSlotServer() {}
 
     public static void init() {
@@ -24,10 +22,9 @@ public final class OneSlotServer {
     private static void enforceOneSlot(ServerPlayerEntity player) {
         PlayerInventory inv = player.getInventory();
 
-        // 1) Nur main[4] behalten
         DefaultedList<ItemStack> main = inv.getMainStacks();
         for (int i = 0; i < main.size(); i++) {
-            if (i == ONE_ALLOWED_MAIN_SLOT) continue;
+            if (i == 4) continue;
             ItemStack stack = main.get(i);
             if (!stack.isEmpty()) {
                 player.dropItem(stack, true, false);
@@ -35,17 +32,13 @@ public final class OneSlotServer {
             }
         }
 
-        // 2) Offhand "reparieren" statt wegwerfen
-        int offhandSlotIndex = PlayerInventory.OFF_HAND_SLOT; // = 40
+        int offhandSlotIndex = PlayerInventory.OFF_HAND_SLOT;
         ItemStack offhand = inv.getStack(offhandSlotIndex);
         if (!offhand.isEmpty()) {
-            ItemStack mainSlot = main.get(ONE_ALLOWED_MAIN_SLOT);
-
-            // a) Wenn Slot 4 leer ist → Item einfach zurück nach Slot 4 packen
+            ItemStack mainSlot = main.get(4);
             if (mainSlot.isEmpty()) {
-                main.set(ONE_ALLOWED_MAIN_SLOT, offhand);
+                main.set(4, offhand);
             } else if (ItemStack.areItemsAndComponentsEqual(mainSlot, offhand) && mainSlot.isStackable()) {
-                // b) Wenn gleicher Stacktyp → in Slot 4 reinstacken
                 int maxCount = Math.min(mainSlot.getMaxCount(), inv.getMaxCount(mainSlot));
                 int canMove = maxCount - mainSlot.getCount();
                 if (canMove > 0) {
@@ -54,20 +47,16 @@ public final class OneSlotServer {
                     offhand.decrement(move);
                 }
 
-                // Falls noch Rest übrig bleibt (sehr unwahrscheinlich in deinem Setup)
                 if (!offhand.isEmpty()) {
                     player.dropItem(offhand, true, false);
                 }
             } else {
-                // c) Irgendwas Komisches (anderes Item) → zur Sicherheit droppen
                 player.dropItem(offhand, true, false);
             }
 
-            // Offhand immer leeren
             inv.setStack(offhandSlotIndex, ItemStack.EMPTY);
         }
 
-        // 3) Rüstung leeren
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
                 ItemStack armor = player.getEquippedStack(slot);
@@ -78,9 +67,8 @@ public final class OneSlotServer {
             }
         }
 
-        // 4) Ausgewählten Slot immer auf 4 locken
-        if (inv.getSelectedSlot() != ONE_ALLOWED_MAIN_SLOT) {
-            inv.setSelectedSlot(ONE_ALLOWED_MAIN_SLOT);
+        if (inv.getSelectedSlot() != 4) {
+            inv.setSelectedSlot(4);
         }
     }
 }

@@ -12,12 +12,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
-
-    @Shadow protected ScreenHandler handler;
 
     @Shadow
     @Nullable
@@ -27,19 +24,15 @@ public abstract class HandledScreenMixin {
     private void oneSlot$hideOtherSlots(DrawContext context, Slot slot, CallbackInfo ci) {
         ScreenHandler handler = ((HandledScreen<?>) (Object) this).getScreenHandler();
 
-        // Nur im Player-Inventar-Screen filtern
         if (!(handler instanceof PlayerScreenHandler)) {
             return;
         }
 
-        // Nur Slots, deren Inventory das PlayerInventory ist, interessieren uns
         if (slot.inventory instanceof PlayerInventory) {
-            // Nur Inventar-Index 4 (Hotbar-Mitte) sichtbar lassen
             if (slot.getIndex() != 4) {
-                ci.cancel(); // nicht zeichnen
+                ci.cancel();
             }
         }
-        // Crafting-Grid, Result, etc. = NICHT PlayerInventory → bleiben sichtbar
     }
 
 
@@ -55,11 +48,9 @@ public abstract class HandledScreenMixin {
             return;
         }
 
-        // Für ALLE ScreenHandler: sobald es ein PlayerInventory-Slot ist ...
         if (this.focusedSlot.inventory instanceof PlayerInventory) {
-            // ... darf nur Inventar-Index 4 überhaupt fokussierbar sein
             if (this.focusedSlot.getIndex() != 4) {
-                this.focusedSlot = null; // -> kein Highlight, keine Tooltipps
+                this.focusedSlot = null;
             }
 
         }
